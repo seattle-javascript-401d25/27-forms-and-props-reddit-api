@@ -1,18 +1,18 @@
 import React from 'react';
-import PokemonList from './searchResultList/searchResultList';
-import PokemonDetail from './searchForm/searchForm';
+import SearchResultList from './searchResultList/searchResultList';
+import SearchForm from './searchForm/searchForm';
 import { fetchData } from '../../lib/utils';
 
 import './app.scss';
 
-const pokemonApi = 'https://pokeapi.co/api/v2/pokemon';
+const redditApi = 'https://www.reddit.com/r/aww.json?limit=10';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      pokemon: {},
-      pokemonList: [],
+      redditlist: {},
+      topics: [],
       loading: false,
     };
   }
@@ -30,35 +30,35 @@ export default class App extends React.Component {
   // this is a lifecyle hook provided to us by React
   componentDidMount() {
     // when you draw yourself on the page, do this logic here
-    this.loadPokemonList()
-      .then((pokemonList) => {
-        this.setState({ pokemonList });
+    this.loadRedditList()
+      .then((redditList) => {
+        this.setState({ redditList });
       })
       .catch(console.error);
   }
 
-  loadPokemonList = () => {
-    return this.load(pokemonApi)
-      .then((pokeData) => {
-        return pokeData.results;
+  loadRedditList = () => {
+    return this.load(redditApi)
+      .then((redditData) => {
+        return redditData.results;
       })
       .catch(console.error);
   }
 
-  pokemonDetails = (event) => {
+  redditListDetails = (event) => {
     const url = event.target.id;
     return this.load(url)
-      .then((pokemon) => {
-        this.setState({ pokemon });
+      .then((list) => {
+        this.setState({ list });
       })
       .catch(console.error);
   }
 
-  pokemonSearch = (search) => {
-    const url = `${pokemonApi}/${search}`;
+  redditListSearch = (search) => {
+    const url = `${redditApi}/${search}`;
     return this.load(url)
-      .then((pokemon) => {
-        this.setState({ pokemon });
+      .then((list) => {
+        this.setState({ list });
       })
       .catch(console.error);
   }
@@ -66,12 +66,14 @@ export default class App extends React.Component {
   render() {
     return (
       <main className="container">
-        <PokemonList 
-          searchMethod={ this.pokemonSearch }
-          pokemon={ this.state.pokemonList }
-          pokemonLoader={ this.pokemonDetails }
+        <SearchForm 
+          searchMethod = { this.redditListSearch }
+         list = { this.state.redditList }
+         redditListLoader = { this.redditListDetails }
         />
-        <PokemonDetail pokemon={this.state.pokemon} />
+        <SearchResultList 
+         reddit = { this.state.reddit }
+        />
       </main>
     );
   }

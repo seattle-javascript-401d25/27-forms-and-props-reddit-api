@@ -3,9 +3,8 @@
 require('dotenv').config();
 
 const { DefinePlugin } = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const production = process.env.NODE_ENV === 'production'; // evals to a Boolean value
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const webpackConfig = module.exports = {};
 
@@ -19,7 +18,7 @@ webpackConfig.output = {
 
 webpackConfig.plugins = [
   new HtmlWebpackPlugin({
-    title: 'Day 26 React App',
+    title: 'Day 27 Reddit React App',
   }),
   new DefinePlugin({
     API_URL: JSON.stringify(process.env.API_URL),
@@ -30,7 +29,7 @@ webpackConfig.module = {};
 
 webpackConfig.module.rules = [
   {
-    test: /\.(png|svg|jpg|gif)$/,
+    test: /\.(png|svg|jpg|gif)$/i,
     use: ['file-loader'],
   },
   {

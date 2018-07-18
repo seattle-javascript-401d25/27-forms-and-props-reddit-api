@@ -3,59 +3,21 @@ import PropTypes from 'prop-types';
 
 import './searchResultList.scss';
 
-export default class PokemonList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      search: '',
-    };
-  }
-
-  // this will replace the "onSubmit" handler of a "form" tag
-  handleSubmit = (event) => {
-    event.preventDefault();
-    // this.props will get passed in later when we import the component
-    this.props.searchMethod(this.state.search);
-  }
-
-  // this will be an event handler that replaces the "onChange" event handler of an "input" tag
-  handleSearch = (event) => {
-    const search = event.target.value;
-    this.setState({ search });
-  }
-
+export default class searchResultList extends React.Component {
   render() {
     return (
-      <div className="pokemon-list">
-        <form onSubmit={ this.handleSubmit }>
-          <input 
-            onChange={ this.handleSearch }
-            placeholder="Search..."
-          />
-          {
-            this.props.pokemon.map((pokemon, index) => {
-              return (
-                <div key={index}>
-                  <div
-                    className="item"
-                    id={ pokemon.url }
-                    onClick= { this.props.pokemonLoader }
-                  >
-                    {pokemon.name}
-                  </div>
-                </div>
-              );
-            })
-          }
-        </form>
-
-      </div>
+      this.props.list.data
+        ? <div className="list-title">
+          <h2>{this.props.list.data.title}</h2>
+          <span>{this.props.list.data.ups}</span>
+          <a href={ `https://www.reddit.com${this.props.list.data.permalink}` }>Source</a>
+          <img src={this.props.list.data.url} />
+        </div>
+        : null
     );
   }
 }
 
-PokemonList.propTypes = {
-  searchMethod: PropTypes.func,
-  pokemon: PropTypes.array,
-  pokemonLoader: PropTypes.func,
+searchResultList.propTypes = {
+  list: PropTypes.object,
 };
