@@ -1,7 +1,7 @@
 import React from 'react';
-import SearchResultList from './searchResultList/searchResultList';
 import SearchForm from './searchForm/searchForm';
-import { fetchData } from '../../lib/utils';
+import SearchResultList from './searchResultList/searchResultList';
+import fetchData from '../../lib/utils';
 
 import './app.scss';
 
@@ -11,8 +11,8 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      redditlist: {},
-      topics: [],
+      article: {},
+      articleList: [],
       loading: false,
     };
   }
@@ -27,38 +27,32 @@ export default class App extends React.Component {
       .catch(console.error);
   }
 
-  // this is a lifecyle hook provided to us by React
   componentDidMount() {
-    // when you draw yourself on the page, do this logic here
-    this.loadRedditList()
-      .then((redditList) => {
-        this.setState({ redditList });
+    this.loadArticleList()
+      .then((articleList) => {
+        this.setState({ articleList });
       })
       .catch(console.error);
   }
 
-  loadRedditList = () => {
+  loadArticleList = () => {
     return this.load(redditApi)
-      .then((redditData) => {
-        return redditData.results;
+      .then((result) => {
+        return result.data.children;
       })
       .catch(console.error);
   }
 
-  redditListDetails = (event) => {
-    const url = event.target.id;
-    return this.load(url)
-      .then((list) => {
-        this.setState({ list });
-      })
-      .catch(console.error);
+  articleDetails = (event) => {
+    const i = event.target.id;
+    return this.setState({ article: this.state.articleList[i] });
   }
 
-  redditListSearch = (search) => {
-    const url = `${redditApi}/${search}`;
+  articleSearch = (search) => {
+    const url = `https://www.reddit.com/r/${search}.json?limit=10`;
     return this.load(url)
-      .then((list) => {
-        this.setState({ list });
+      .then((article) => {
+        this.setState({ articleList: article.data.children });
       })
       .catch(console.error);
   }
@@ -66,13 +60,13 @@ export default class App extends React.Component {
   render() {
     return (
       <main className="container">
-        <SearchForm 
-          searchMethod = { this.redditListSearch }
-         list = { this.state.redditList }
-         redditListLoader = { this.redditListDetails }
-        />
         <SearchResultList 
-         reddit = { this.state.reddit }
+          searchMethod={ this.articleSearch }
+          article={ this.state.articleList }
+          articleLoader={ this.articleDetails }
+        />
+        <SearchForm 
+          article={ this.state.article }
         />
       </main>
     );
