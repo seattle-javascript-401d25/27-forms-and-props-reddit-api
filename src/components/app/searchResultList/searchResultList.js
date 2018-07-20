@@ -6,18 +6,35 @@ import './searchResultList.scss';
 export default class searchResultList extends React.Component {
   render() {
     return (
-      this.props.list.data
-        ? <div className="list-title">
-          <h2>{this.props.list.data.title}</h2>
-          <span>{this.props.list.data.ups}</span>
-          <a href={ `https://www.reddit.com${this.props.list.data.permalink}` }>Source</a>
-          <img src={this.props.list.data.url} />
-        </div>
-        : null
+      <div className="article-list">
+        <form onSubmit={ this.handleSubmit }>
+          <input 
+            onChange={ this.handleSearch }
+            placeholder="Search..."
+          />
+          {
+            this.props.article.map((article, index) => {
+              return (
+                <div key={index}>
+                  <div
+                    className="item"
+                    id={ article.url }
+                    onClick= { this.props.articleLoader }
+                  >
+                    {article.name}
+                  </div>
+                </div>
+              );
+            })
+          }
+        </form>
+
+      </div>
     );
   }
 }
 
 searchResultList.propTypes = {
-  list: PropTypes.object,
+  article: PropTypes.object,
+  articleLoader: PropTypes.func,
 };

@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import './searchForm.scss';
 
-export default class SearchForm extends React.Component {
+export default class searchForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,8 +29,8 @@ export default class SearchForm extends React.Component {
 
   render() {
     return (
-<div className="search-form">
-        <form>
+      <div className="search-form">
+        <form type="submit" value="Submit" onClick={ this.handleSubmit }>
           <input 
             onChange= { this.handleSearch }
             placeholder="Search"
@@ -38,19 +39,16 @@ export default class SearchForm extends React.Component {
             onChange= { this.handleLimit }
             placeholder="10"
           />
-          <input 
-            type="submit" value="Submit" onClick={ this.handleSubmit }
-          />
           { 
-            this.props.redditList.map((list, index) => {
+            this.props.article.map((article, index) => {
               return (
                 <div key={index}>
                   <div
-                    className="list"
+                    className="article"
                     id={ index }
-                    onClick={ this.props.redditListLoader }
+                    onClick={ this.props.articleLoader }
                   >
-                    {list.data.title}
+                    {article.data.title}
                   </div>
                 </div>
               );
@@ -61,3 +59,9 @@ export default class SearchForm extends React.Component {
     );
   }
 }
+
+searchForm.propTypes = {
+  searchMethod: PropTypes.func,
+  article: PropTypes.array,
+  articleLoader: PropTypes.func,
+};
