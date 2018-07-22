@@ -1,17 +1,15 @@
 import React from 'react';
-import SearchForm from './searchForm/searchForm';
-import SearchResultList from './searchResultList/searchResultList';
-import fetchData from '../../lib/utils';
+import RedditList from './searchResultList';
+import { fetchData } from '../../lib/utils';
 
 import './app.scss';
 
 const redditApi = 'https://www.reddit.com/r/aww.json?limit=10';
 
-export default class App extends React.Component {
+export default class SearchForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      article: {},
       articleList: [],
       loading: false,
     };
@@ -28,31 +26,21 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    this.loadArticleList()
-      .then((articleList) => {
-        this.setState({ articleList });
-      })
-      .catch(console.error);
   }
 
   loadArticleList = () => {
     return this.load(redditApi)
-      .then((result) => {
-        return result.data.children;
+      .then((articles) => {
+        return articles.results;
       })
       .catch(console.error);
   }
 
-  articleDetails = (event) => {
-    const i = event.target.id;
-    return this.setState({ article: this.state.articleList[i] });
-  }
-
-  articleSearch = (search) => {
-    const url = `https://www.reddit.com/r/${search}.json?limit=10`;
+  redditSearch = (search, limit) => {
+    const url = `${redditApi}/${search}.json?limit=${limit}`;
     return this.load(url)
-      .then((article) => {
-        this.setState({ articleList: article.data.children });
+      .then((articles) => {
+        this.setState({ articles });
       })
       .catch(console.error);
   }
@@ -60,15 +48,11 @@ export default class App extends React.Component {
   render() {
     return (
       <main className="container">
-        <SearchResultList 
-          searchMethod={ this.articleSearch }
-          article={ this.state.articleList }
-          articleLoader={ this.articleDetails }
-        />
-        <SearchForm 
-          article={ this.state.article }
-        />
-      </main>
+      <RedditList 
+        searchMethod={ this.redditSearch }
+        articleList={ this.state.articleList }
+      />
+    </main>
     );
   }
 }
